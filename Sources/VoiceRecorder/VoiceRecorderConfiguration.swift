@@ -191,7 +191,13 @@ extension VoiceRecorderConfiguration {
 
     /// 默认配置
     public static var `default`: VoiceRecorderConfiguration {
-        return VoiceRecorderConfiguration()
+        // 设置默认的保存目录为 Documents
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let defaultSaveDirectory = documentsDirectory.appendingPathComponent("VoiceRecorder")
+
+        return VoiceRecorderConfiguration(
+            saveDirectory: defaultSaveDirectory
+        )
     }
 
     /// 高质量配置（适合音乐录制）

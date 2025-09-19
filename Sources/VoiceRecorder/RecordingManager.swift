@@ -48,11 +48,20 @@ actor RecordingManager {
             throw VoiceRecorderError.recordingInProgress
         }
 
+        // 验证文件URL和父目录
+        let parentDirectory = url.deletingLastPathComponent()
+        if !FileManager.default.fileExists(atPath: parentDirectory.path) {
+            throw VoiceRecorderError.fileOperationFailed("录音目录不存在: \(parentDirectory.path)")
+        }
+
         // 设置音频会话
         try await setupAudioSession()
 
         // 创建音频录制器
         do {
+            print("[RecordingManager] 创建录音器: \(url.path)")
+            print("[RecordingManager] 录音设置: \(settings)")
+
             audioRecorder = try AVAudioRecorder(url: url, settings: settings)
             guard let recorder = audioRecorder else {
                 throw VoiceRecorderError.recordingFailed("无法创建音频录制器")
@@ -60,10 +69,22 @@ actor RecordingManager {
 
             // 配置录制器
             recorder.isMeteringEnabled = configuration.enableMetering
-            recorder.prepareToRecord()
+
+            // 准备录音
+            let prepareSuccess = recorder.prepareToRecord()
+            print("[RecordingManager] 录音器准备结果: \(prepareSuccess)")
+
+            if !prepareSuccess {
+                throw VoiceRecorderError.recordingFailed("录音器准备失败")
+            }
 
             // 开始录音
-            guard recorder.record() else {
+            let recordSuccess = recorder.record()
+            print("[RecordingManager] 录音启动结果: \(recordSuccess)")
+
+            guard recordSuccess else {
+                // 获取更详细的错误信息
+                print("[RecordingManager] 录音文件URL: \(recorder.url)")
                 throw VoiceRecorderError.recordingFailed("录音启动失败")
             }
 
@@ -72,10 +93,13 @@ actor RecordingManager {
             currentFileURL = url
             totalPausedDuration = 0
 
+            print("[RecordingManager] 录音成功启动")
+
         } catch {
             // 清理资源
             audioRecorder = nil
             currentFileURL = nil
+            print("[RecordingManager] 录音启动失败: \(error)")
             throw VoiceRecorderError.recordingFailed("录音初始化失败: \(error.localizedDescription)")
         }
     }
@@ -259,6 +283,8 @@ actor RecordingManager {
         let audioSession = AVAudioSession.sharedInstance()
 
         do {
+            print("[RecordingManager] 配置音频会话...")
+
             // 设置音频会话类别
             try audioSession.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker])
 
@@ -269,17 +295,21 @@ actor RecordingManager {
 
             // 激活音频会话
             try audioSession.setActive(true)
+            print("[RecordingManager] 音频会话激活成功")
 
             // 设置音频输入增益（如果支持）
             if audioSession.isInputGainSettable {
                 try audioSession.setInputGain(configuration.inputGain)
+                print("[RecordingManager] 输入增益设置为: \(configuration.inputGain)")
             }
 
         } catch {
+            print("[RecordingManager] 音频会话设置失败: \(error)")
             throw VoiceRecorderError.audioSessionSetupFailed("音频会话设置失败: \(error.localizedDescription)")
         }
         #else
         // macOS 不需要设置 AVAudioSession
+        print("[RecordingManager] macOS 环境，跳过音频会话设置")
         #endif
     }
 

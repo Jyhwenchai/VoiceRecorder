@@ -133,9 +133,9 @@ public enum AudioFormat: String, CaseIterable, Sendable {
         case .m4a, .aac:
             // AAC压缩设置
             settings[AVEncoderAudioQualityKey] = quality.avAudioQuality.rawValue
-            if let bitRate = bitRate {
-                settings[AVEncoderBitRateKey] = bitRate
-            }
+//            if let bitRate = bitRate {
+//                settings[AVEncoderBitRateKey] = bitRate
+//            }
 
         case .mp3:
             // MP3压缩设置

@@ -118,8 +118,9 @@ actor FileOperationsActor {
         if let saveDirectory = configuration.saveDirectory {
             directory = saveDirectory
         } else {
-            // 使用临时目录
-            directory = fileManager.temporaryDirectory.appendingPathComponent("VoiceRecorder")
+            // 使用 Documents 目录而不是临时目录，确保可写权限
+            let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+            directory = documentsDirectory.appendingPathComponent("VoiceRecorder")
         }
 
         try await ensureDirectoryExists(directory)
@@ -141,11 +142,15 @@ actor FileOperationsActor {
         }
 
         // 创建目录
-        try fileManager.createDirectory(
-            at: directory,
-            withIntermediateDirectories: true,
-            attributes: nil
-        )
+        do {
+            try fileManager.createDirectory(
+                at: directory,
+                withIntermediateDirectories: true,
+                attributes: nil
+            )
+        } catch {
+            throw VoiceRecorderError.fileOperationFailed("无法创建录音目录: \(directory.path), 错误: \(error.localizedDescription)")
+        }
     }
 
     /// 获取目录内容

@@ -315,9 +315,11 @@ class UIKitExampleViewController: UIViewController {
             print("录音停止: \(fileURL)")
         case .cancelled:
             print("录音取消")
-        case .audioLevel(_):
+        case .audioLevel(let level):
             // 音频级别在 UI 更新中处理
-            break
+          print("current level: \(level)")
+        case .peakAudioLevel(let level):
+          print("current peak: \(level)")
         case .duration(_):
             // 时长在 UI 更新中处理
             break

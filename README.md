@@ -55,7 +55,7 @@
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/your-repo/VoiceRecorder.git", from: "1.0.0")
+    .package(url: "https://github.com/Jyhwenchai/VoiceRecorder.git", from: "1.0.0")
 ]
 ```
 
