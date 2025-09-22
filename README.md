@@ -210,7 +210,7 @@ config.autoStopBelowMinimum = true
 
 // 文件管理
 config.fileNamePrefix = "interview"
-config.fileNamingPattern = .dateTimeSuffix
+config.fileNamingPattern = .timestampSuffix
 config.saveDirectory = documentsURL
 
 // 实时监控
@@ -306,6 +306,16 @@ class RecordingManager: VoiceRecorderDelegate {
 ```
 
 ## 🎵 音频格式支持
+
+### 支持的文件命名模式
+
+- `timestampSuffix`: prefix_20231201_143022.ext
+- `timestampPrefix`: 20231201_143022_prefix.ext
+- `dateTimeSuffix`: prefix_2023-12-01_14-30-22.ext
+- `sequentialNumber`: prefix_001.ext, prefix_002.ext
+- `uuid`: prefix_UUID.ext
+
+### 音频格式对比
 
 | 格式 | 扩展名 | 压缩 | 质量 | 兼容性 | 推荐用途 |
 |------|--------|------|------|--------|----------|
@@ -426,20 +436,29 @@ VoiceRecorder/
 │   └── RecordingEvent.swift             # 事件系统
 ├── Tests/VoiceRecorderTests/
 │   └── VoiceRecorderTests.swift         # 测试用例
-├── Example/
-│   ├── SwiftUIExample.swift             # SwiftUI 示例
-│   └── UIKitExample.swift               # UIKit 示例
+├── Example/Example/
+│   ├── UIKitExample.swift               # UIKit 示例
+│   ├── ViewController.swift             # 视图控制器
+│   ├── AppDelegate.swift                # 应用委托
+│   └── SceneDelegate.swift              # 场景委托
+├── SwiftUIExample/SwiftUIExample/
+│   ├── ContentView.swift                # 主视图
+│   ├── ConfigurationView.swift          # 配置视图
+│   ├── RecordingListView.swift          # 录音列表
+│   ├── AudioVisualizerView.swift        # 音频可视化
+│   ├── PermissionRequestView.swift      # 权限请求
+│   └── RecordingViewModel.swift         # 视图模型
 ├── Package.swift                        # SPM 配置
 └── README.md                           # 说明文档
 ```
 
 ## 🤝 贡献
 
-欢迎贡献代码！请查看 [CONTRIBUTING.md](CONTRIBUTING.md) 了解详细信息。
+欢迎贡献代码！如有建议或发现问题，请提交 Issue 或 Pull Request。
 
 ## 📄 许可证
 
-本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
+本项目采用 MIT 许可证。
 
 ## 🙏 致谢
 
@@ -449,9 +468,9 @@ VoiceRecorder/
 
 ## 📞 支持
 
-- 📖 [文档](https://docs.example.com/voicerecorder)
-- 🐛 [问题反馈](https://github.com/your-repo/VoiceRecorder/issues)
-- 💬 [讨论区](https://github.com/your-repo/VoiceRecorder/discussions)
+如有问题或建议，请通过以下方式联系：
+- 🐛 [问题反馈](https://github.com/Jyhwenchai/VoiceRecorder/issues)
+- 💬 [讨论区](https://github.com/Jyhwenchai/VoiceRecorder/discussions)
 
 ---
 
